@@ -1,0 +1,3 @@
+dataset: "ADL-Rundle-8"
+image_path: "./MOT15/train/"
+detections_path: ""
