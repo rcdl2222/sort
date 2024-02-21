@@ -6,34 +6,30 @@
 
 using BBoxList = std::vector<std::vector<cv::Rect>>;
 
-inline BBoxList getBBoxList(std::ifstream& label_file, float conf = 0.6)
+inline BBoxList getBBoxList(std::ifstream& label_file)
 {
     // Process labels - group bounding boxes by frame index
-    std::vector<std::vector<cv::Rect>> bbox;
+    BBoxList bbox;
     std::vector<cv::Rect> bbox_per_frame;
     // Label index starts from 1
     int current_frame_index = 1;
     std::string line;
-
     while (std::getline(label_file, line)) {
         std::stringstream ss(line);
         // Label format <frame>, <id>, <bb_left>, <bb_top>, <bb_width>, <bb_height>, <conf>, <x>, <y>, <z>
         std::vector<float> label;
         std::string data;
-        while (getline(ss , data, ',')) {
+        while (std::getline(ss , data, ',')) 
+        {
             label.push_back(std::stof(data));
         }
-
-        if (static_cast<int>(label[0]) != current_frame_index) {
+        if (static_cast<int>(label[0]) != current_frame_index) 
+        {
             current_frame_index = static_cast<int>(label[0]);
             bbox.push_back(bbox_per_frame);
             bbox_per_frame.clear();
         }
         bbox_per_frame.emplace_back(label[2], label[3], label[4], label[5]);
-
-        // Ignore low confidence detections
-        // if (label[6] > conf) {
-        // }
     }
     // Add bounding boxes from last frame
     bbox.push_back(bbox_per_frame);
